@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Reports</title>
+    <link rel="stylesheet" href="../static/css/reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Reports</h2>
+        <form id="reportForm" method="POST" action="/generate_report">
+            <label for="period">Select Report Period:</label>
+            <select name="period" id="period">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+            <button type="submit">Generate Report</button>
+        </form>
+
+        <!-- Report Chart -->
+        <div class="chart-container">
+            <h3>Expense Report Chart</h3>
+            <canvas id="reportChart" width="400" height="400"></canvas>
+        </div>
+
+        <!-- Report Data List -->
+        <ul id="reportData">
+            <!-- Example list items will be dynamically added here -->
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Get the selected period
+            const period = document.getElementById('period').value;
+
+            // AJAX request to the server to fetch the report data
+            fetch('/generate_report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ period: period })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the chart
+                    const ctx = document.getElementById('reportChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels, // Labels for the chart
+                            datasets: [{
+                                label: 'Expenses',
+                                data: data.values, // Expense values
+                                backgroundColor: '#4caf50'
+                            }]
+                        }
+                    });
+
+                    // Update the expense list
+                    const reportData = document.getElementById('reportData');
+                    reportData.innerHTML = ''; // Clear previous data
+                    data.expenses.forEach(expense => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${expense.date}: ${expense.category} - $${expense.amount}`;
+                        reportData.appendChild(listItem);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

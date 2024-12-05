@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="../static/css/add_expense.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Expense</h2>
+        <form method="POST" action="/add-expense">
+            <div class="form-group">
+                <input type="text" name="category" placeholder="Category" required>
+            </div>
+            <div class="form-group">
+                <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+            </div>
+            <div class="form-group">
+                <input type="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <textarea name="description" placeholder="Description"></textarea>
+            </div>
+            <button type="submit" class="btn">Add Expense</button>
+        </form>
+    </div>
+</body>
+</html>
